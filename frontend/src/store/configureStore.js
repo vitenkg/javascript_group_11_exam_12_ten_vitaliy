@@ -1,15 +1,16 @@
 import {combineReducers} from "redux";
-import thunk from "redux-thunk";
 import {initialState} from "./slices/usersSlice";
 import {loadFromLocalStorage, saveToLocalStorage} from "./localStorage";
 import axiosApi from "../axiosApi";
-import {configureStore} from "@reduxjs/toolkit";
+import {configureStore, getDefaultMiddleware} from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import {rootSagas} from "./rootSagas";
 import usersSlice from "./slices/usersSlice";
+import galleriesSlice from "./slices/galleriesSlice";
 
 const rootReducer = combineReducers({
   'users': usersSlice.reducer,
+  'galleries': galleriesSlice.reducer,
 });
 
 const persistedState = loadFromLocalStorage();
@@ -17,8 +18,8 @@ const persistedState = loadFromLocalStorage();
 const sagaMiddleware = createSagaMiddleware();
 
 const middleware = [
-    thunk,
-    sagaMiddleware,
+    ...getDefaultMiddleware(),
+    sagaMiddleware
 ];
 
 const store = configureStore({
@@ -43,7 +44,9 @@ store.subscribe(() => {
 axiosApi.interceptors.request.use(config => {
   try {
     config.headers['Authorization'] = store.getState().users.user.token
-  } catch (e) {}
+  } catch (e) {
+
+  }
 
   return config;
 });
