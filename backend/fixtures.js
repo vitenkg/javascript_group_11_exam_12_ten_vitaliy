@@ -25,7 +25,13 @@ const run = async () => {
             token: nanoid(),
             displayName: 'Test',
             role: 'user'
-        }
+        },{
+            email: 'test1@test.com',
+            password: 'test',
+            token: nanoid(),
+            displayName: 'Test',
+            role: 'user'
+        },
     );
 
     await mongoose.connection.close();
