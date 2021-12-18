@@ -1,15 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, Container, Grid, Link, makeStyles, TextField, Typography} from "@material-ui/core";
+import {Container, Grid, makeStyles, TextField, Typography} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
-import {clearErrorUser, loginUserRequest, registerUserRequest} from "../../store/actions/usersActions";
 import {clearErrorGallery, createImage} from "../../store/actions/galleriesActions";
-import LockOpenOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
-import {Alert} from "@material-ui/lab";
 import FormElement from "../../components/Form/FormElement";
 import ButtonWithProgress from "../../components/UI/AppToolbar/ButtonWithProgress/ButtonWithProgress";
-import FacebookLogin from "../../components/UI/FacebookLogin/FacebookLogin";
-import GoogleLogin from "../../components/UI/GoogleLogin/GoogleLogin";
-import {Link as RouterLink} from "react-router-dom";
 
 
 const useStyles = makeStyles(theme => ({
