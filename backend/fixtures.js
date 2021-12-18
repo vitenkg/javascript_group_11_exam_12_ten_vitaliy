@@ -30,7 +30,7 @@ const run = async () => {
             email: 'test1@test.com',
             password: 'test',
             token: nanoid(),
-            displayName: 'Test',
+            displayName: 'Test1',
             role: 'user'
         },
     );

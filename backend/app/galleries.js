@@ -10,6 +10,17 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, config.uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, nanoid() + path.extname(file.originalname))
+    }
+});
+
+const upload = multer({storage});
+
 router.get('/', async (req, res) => {
     try {
         const galleries = await Gallery.find()
@@ -23,7 +34,6 @@ router.get('/', async (req, res) => {
 
 router.get('/user/:id', async (req, res) => {
     const userId = (req.params.id);
-    console.log(userId);
     try {
         const galleries = await Gallery.find({user: userId})
             .populate('user', 'displayName');
@@ -34,8 +44,9 @@ router.get('/user/:id', async (req, res) => {
     }
 });
 
-router.post('/user', auth, async (req, res) => {
-    if (!req.body.title || !req.file) {
+router.post('/', auth, upload.single('image'),async (req, res) => {
+    console.log("post", req.body);
+    if (!req.body.title) {
         return res.status(400).send({error: 'Data No Valid'});
     }
 
@@ -48,7 +59,10 @@ router.post('/user', auth, async (req, res) => {
         galleryData.image = req.file.filename;
     }
 
+    console.log(galleryData);
+
     const gallery = new Gallery(galleryData);
+
 
     try {
         await gallery.save();
@@ -59,23 +73,14 @@ router.post('/user', auth, async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const user = req.user;
     const _id = req.params.id;
     try {
-        const deleteItemGallery = Gallery.findOne({_id});
-        console.log(deleteItemGallery[user]);
-        if (deleteItemGallery[user]._id === user._id) {
-            await Gallery.findByIdAndUpdate(req.body.id, { publish: true },
-                function (err, docs) {
-                    if (err){
-                        console.log(err);
-                        res.status(401).send({error: 'Something wrong'});
-                    }
-                    else{
-                        res.send({message: "Updated User: "});
-                    }
-                });
+        const deleteItemGallery = await Gallery.findById(_id)
+            .populate('user', 'displayName');
+        if (deleteItemGallery.user.equals(user._id)) {
+            deleteItemGallery.delete();
         } else {
             return res.status(403).send({error: 'Permission denied'});
         }
