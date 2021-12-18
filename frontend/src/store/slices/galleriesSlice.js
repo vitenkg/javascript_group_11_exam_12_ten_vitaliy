@@ -30,11 +30,11 @@ const usersSlice = createSlice({
             state.fetchLoading = true;
         },
         fetchUserGallerySuccess(state, action) {
-            state.fetchLoading = true;
+            state.fetchLoading = false;
             state.galleries = action.payload;
         },
         fetchUserGalleryFailure(state, action) {
-            state.fetchLoading = true;
+            state.fetchLoading = false;
             state.loginError = action.payload;
         },
         clearErrorGallery (state, action) {

@@ -45,10 +45,10 @@ export function* createImageSagas({payload: data}) {
     }
 }
 
-export function* eraseImageSagas({payload: id}) {
-    console.log(id);
+export function* eraseImageSagas(action) {
     try {
-        yield axiosApi.delete('/galleries/' + id);
+        yield axiosApi.delete('/galleries/' + action.payload.id);
+        yield put(historyPush('/user/' + action.payload.paramsId));
         toast.success("Image Delete Successfully");
     } catch (e) {
         toast.error('Error Erase');
